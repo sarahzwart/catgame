@@ -11,25 +11,23 @@ const loadMap = require('./mapLoader');
 
 const TICK_RATE = 30;
 const SPEED = 5;
-const TILE_SIZE = 32;
+const TILE_SIZE = 16;
 
 let players = [];
 const inputsMap = {};
 
 let ball = {
     x: 800,
-    y: 800,
+    y: 400,
     vx: 0,
     vy: 0,
     radius: 12
 };
 
-// Define the boundaries for the ball
 const BALL_MAX_X = 1500;
-const BALL_MAX_Y = 1500;
+const BALL_MAX_Y = 750;
 
 function tick() {
-    // Update player positions
     for (const player of players) {
         const inputs = inputsMap[player.id];
         if (inputs.up) {
@@ -42,19 +40,14 @@ function tick() {
         } else if (inputs.right) {
             player.x += SPEED;
         }
-
-        // Keep players within boundaries
         player.x = Math.max(0, Math.min(player.x, 1550));
-        player.y = Math.max(0, Math.min(player.y, 1550));
+        player.y = Math.max(0, Math.min(player.y, 760));
     }
 
-    // Check collision with players and move the ball
     for (const player of players) {
         const dx = ball.x - player.x;
         const dy = ball.y - player.y;
         const distance = Math.hypot(dx, dy);
-
-        // If the player is near the ball (within a radius), the ball moves in their direction
         if (distance < ball.radius + TILE_SIZE) {
             const angle = Math.atan2(dy, dx);
             const speed = 5;

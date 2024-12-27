@@ -1,5 +1,5 @@
 const mapImage = new Image();
-mapImage.src = "/terrain.png";
+mapImage.src = "/groundGrass.png";
 
 const catImage = new Image();
 catImage.src = "/cat2.png";
@@ -34,7 +34,7 @@ socket.on("players", (serverPlayers) => {
 });
 
 socket.on("ball", (serverBall) => {
-    ball = serverBall;  // Update ball position and velocity from the server
+    ball = serverBall;  
 });
 
 const inputs = {
@@ -73,13 +73,10 @@ window.addEventListener("keyup", (e) => {
 window.addEventListener('click', (e) => {
     const myPlayer = players.find(player => player.id === socket.id);
     if (!myPlayer) return;
-
     const ballDistance = Math.hypot(ball.x - myPlayer.x, ball.y - myPlayer.y);
-
-    // Check if the player is near the ball
-    if (ballDistance < TILE_SIZE * 2) { // Ball's radius can be adjusted for "near" detection
+    if (ballDistance < TILE_SIZE * 2) { 
         const angle = Math.atan2(e.clientY - myPlayer.y, e.clientX - myPlayer.x);
-        const speed = 5; // Adjust the speed of the ball movement
+        const speed = 5; 
         socket.emit('ball', {
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed
@@ -88,7 +85,6 @@ window.addEventListener('click', (e) => {
 });
 
 function loop() {
-    // Clear the canvas before each frame
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height);
     
     const myPlayer = players.find((player) => player.id === socket.id);
@@ -101,13 +97,12 @@ function loop() {
         cameraY = Math.max(0, Math.min(myPlayer.y - canvasEl.height / 2, map.length * TILE_SIZE - canvasEl.height));
     }
     
-    const TILES_IN_ROW = 64;
+    const TILES_IN_ROW = 52;
 
-    // Fill the canvas background with a color (e.g., black) to hide any white space
-    canvas.fillStyle = "#000";  // Or use a color that matches your game environment
+   
+    canvas.fillStyle = "#000";  
     canvas.fillRect(0, 0, canvasEl.width, canvasEl.height);
     
-    // Draw the map
     for (let row = 0; row < map.length; row++) {
         for (let col = 0; col < map[0].length; col++) {
             const { id } = map[row][col];
@@ -127,13 +122,12 @@ function loop() {
         }
     }
 
-    // Draw the players
     for (const player of players) {
         canvas.drawImage(catImage, player.x - cameraX, player.y - cameraY);
     }
 
-    // Draw the ball
-    const ballRadius = 15; // or whatever radius you want for the ball's size
+   
+    const ballRadius = 15; 
     canvas.drawImage(
         ballImage, 
         ball.x - cameraX, 
@@ -141,8 +135,6 @@ function loop() {
         ballRadius * 2, 
         ballRadius * 2  
     );
-
-    // Request the next frame
     window.requestAnimationFrame(loop);
 }
 

@@ -2,7 +2,7 @@ var tmx = require('tmx-parser');
 
 async function loadMap (){
     const map = await new Promise((resolve, reject) => {
-        tmx.parseFile("./src/map2.tmx", function(err, loadedMap) {
+        tmx.parseFile("./src/soccer.tmx", function(err, loadedMap) {
             if (err) return reject(err);
             resolve(loadedMap);
         });
@@ -15,7 +15,7 @@ async function loadMap (){
     for(let row = 0; row < map.height; row++){
         const tileRow = [];
         for(let col = 0; col < map.width; col++){
-            const tile = tiles[row * map.height + col]
+            const tile = tiles[row * map.width + col]
             tileRow.push({id: tile.id, gid: tile.gid });
         }
         map2D.push(tileRow)
