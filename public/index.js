@@ -2,7 +2,7 @@ const mapImage = new Image();
 mapImage.src = "/groundGrass.png";
 
 const catImage = new Image();
-catImage.src = "/cat2.png";
+catImage.src = "/cat.png";
 
 const ballImage = new Image();
 ballImage.src = '/ball.png';
@@ -16,7 +16,7 @@ const socket = io('ws://localhost:3000');
 
 let map = [[]];
 let players = [];
-let ball = { x: 800, y: 800, vx: 0, vy: 0 };  // Define ball object here
+let ball = { x: 800, y: 800, vx: 0, vy: 0 }; 
 
 const TILE_SIZE = 16;
 
@@ -45,30 +45,47 @@ const inputs = {
 };
 
 window.addEventListener("keydown", (e) => {
-    if(e.key === "w"){
-        inputs["up"] = true;
-    } else if (e.key === "s"){
-        inputs["down"] = true;
-    } else if (e.key ==="d"){
-        inputs["right"] = true;
-    } else if (e.key === "a"){
-        inputs["left"] = true;
+    const myPlayer = players.find(player => player.id === socket.id);
+    if (!myPlayer) return;
+    
+    if (!inputs[myPlayer.id]) {
+        inputs[myPlayer.id] = { up: false, down: false, left: false, right: false };
     }
-    socket.emit("inputs", inputs);
+
+    if (e.key === "w") {
+        inputs[myPlayer.id]["up"] = true;
+    } else if (e.key === "s") {
+        inputs[myPlayer.id]["down"] = true;
+    } else if (e.key === "d") {
+        inputs[myPlayer.id]["right"] = true;
+    } else if (e.key === "a") {
+        inputs[myPlayer.id]["left"] = true;
+    }
+
+    socket.emit("inputs", inputs); 
 });
 
 window.addEventListener("keyup", (e) => {
-    if(e.key === "w"){
-        inputs["up"] = false;
-    } else if (e.key === "s"){
-        inputs["down"] = false;
-    } else if (e.key ==="d"){
-        inputs["right"] = false;
-    } else if (e.key === "a"){
-        inputs["left"] = false;
+    const myPlayer = players.find(player => player.id === socket.id);
+    if (!myPlayer) return;
+
+    if (!inputs[myPlayer.id]) {
+        inputs[myPlayer.id] = { up: false, down: false, left: false, right: false };
     }
-    socket.emit("inputs", inputs);
+
+    if (e.key === "w") {
+        inputs[myPlayer.id]["up"] = false;
+    } else if (e.key === "s") {
+        inputs[myPlayer.id]["down"] = false;
+    } else if (e.key === "d") {
+        inputs[myPlayer.id]["right"] = false;
+    } else if (e.key === "a") {
+        inputs[myPlayer.id]["left"] = false;
+    }
+
+    socket.emit("inputs", inputs); // Emit updated inputs
 });
+
 
 window.addEventListener('click', (e) => {
     const myPlayer = players.find(player => player.id === socket.id);
@@ -83,6 +100,26 @@ window.addEventListener('click', (e) => {
         });
     }
 });
+
+function getCatOrientation(player) {
+    const frameWidth = 30;
+    const frameHeight = 30;
+    const playerInputs = inputs[player.id] || { up: false, down: false, left: false, right: false };
+    
+    if (playerInputs.right) {
+        return { x: 0, y: 0, width: frameWidth, height: frameHeight }; 
+    } else if (playerInputs.left) {
+        return { x: 0, y: 95, width: frameWidth, height: frameHeight }; 
+    }
+    if (playerInputs.down) {
+        return { x: 0, y: 63, width: frameWidth, height: frameHeight }; 
+    } else if (playerInputs.up) {
+        return { x: 0, y: 30, width: frameWidth, height: frameHeight }; 
+    }
+    return { x: 0, y: 0, width: frameWidth, height: frameHeight }; 
+}
+
+
 
 function loop() {
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height);
@@ -99,7 +136,6 @@ function loop() {
     
     const TILES_IN_ROW = 52;
 
-   
     canvas.fillStyle = "#000";  
     canvas.fillRect(0, 0, canvasEl.width, canvasEl.height);
     
@@ -121,12 +157,21 @@ function loop() {
             );
         }
     }
-
     for (const player of players) {
-        canvas.drawImage(catImage, player.x - cameraX, player.y - cameraY);
+        const catOrientation = getCatOrientation(player);
+        console.log('Cat Orientation:', catOrientation); 
+        canvas.drawImage(
+            catImage,
+            catOrientation.x, 
+            catOrientation.y,
+            catOrientation.width, 
+            catOrientation.height, 
+            player.x - cameraX, 
+            player.y - cameraY, 
+            48, 48  
+        );
     }
-
-   
+    
     const ballRadius = 15; 
     canvas.drawImage(
         ballImage, 
@@ -135,8 +180,8 @@ function loop() {
         ballRadius * 2, 
         ballRadius * 2  
     );
+    
     window.requestAnimationFrame(loop);
 }
-
 
 window.requestAnimationFrame(loop);

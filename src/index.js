@@ -56,19 +56,12 @@ function tick() {
         }
     }
 
-    // Update ball position
     ball.x += ball.vx;
     ball.y += ball.vy;
-
-    // Apply friction to slow the ball down
     ball.vx *= 0.99;
     ball.vy *= 0.99;
-
-    // Prevent the ball from going outside the boundaries
     ball.x = Math.max(ball.radius, Math.min(ball.x, BALL_MAX_X));
     ball.y = Math.max(ball.radius, Math.min(ball.y, BALL_MAX_Y));
-
-    // Emit updated player and ball positions to all clients
     io.emit("players", players);
     io.emit('ball', ball);
 }
@@ -78,26 +71,31 @@ async function main() {
 
     io.on('connect', (socket) => {
         console.log("user connected", socket.id);
-
         inputsMap[socket.id] = {
             up: false,
             down: false,
             left: false,
             right: false
         };
-
+    
         players.push({
             id: socket.id,
             x: 0,
             y: 0
         });
-
+    
         socket.emit("map", map2D);
         socket.emit("ball", ball);
-
+    
         socket.on('inputs', (inputs) => {
-            inputsMap[socket.id] = inputs;
+            inputsMap[socket.id] = inputs[socket.id] || {
+                up: false,
+                down: false,
+                left: false,
+                right: false
+            };
         });
+    
         socket.on('ball', (velocity) => {
             ball.vx = velocity.vx;
             ball.vy = velocity.vy;
