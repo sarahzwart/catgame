@@ -1,13 +1,46 @@
 const express = require('express');
 const { createServer } = require('http');
 const { Server } = require("socket.io");
+const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 const httpServer = createServer(app);
 
 const io = new Server(httpServer);
 
 const loadMap = require('./mapLoader');
+
+const users = {
+    "user1": "password1"
+};
+
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/soccer', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/login', (req, res) => {
+    console.log('Received body:', req.body);
+    const { username, password } = req.body;
+    if (users[username] === password) {
+        res.json({ success: true, message: "Login successful!" });
+    } else {
+        res.json({ success: false, message: "Invalid username or password" });
+    }
+});
+
+
+app.use(bodyParser.json());
 
 const TICK_RATE = 30;
 const SPEED = 5;

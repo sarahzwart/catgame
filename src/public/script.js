@@ -130,8 +130,12 @@ function loop() {
     let cameraY = 0;
     
     if (myPlayer) {
-        cameraX = Math.max(0, Math.min(myPlayer.x - canvasEl.width / 2, map[0].length * TILE_SIZE - canvasEl.width)); 
-        cameraY = Math.max(0, Math.min(myPlayer.y - canvasEl.height / 2, map.length * TILE_SIZE - canvasEl.height));
+        // Calculate camera position based on player's position and map dimensions
+        const mapWidth = map[0].length * TILE_SIZE;
+        const mapHeight = map.length * TILE_SIZE;
+
+        cameraX = Math.max(0, Math.min(myPlayer.x - canvasEl.width / 2, mapWidth - canvasEl.width)); 
+        cameraY = Math.max(0, Math.min(myPlayer.y - canvasEl.height / 2, mapHeight - canvasEl.height));
     }
     
     const TILES_IN_ROW = 52;
@@ -159,7 +163,6 @@ function loop() {
     }
     for (const player of players) {
         const catOrientation = getCatOrientation(player);
-        console.log('Cat Orientation:', catOrientation); 
         canvas.drawImage(
             catImage,
             catOrientation.x, 
@@ -185,3 +188,8 @@ function loop() {
 }
 
 window.requestAnimationFrame(loop);
+
+window.addEventListener('resize', () => {
+    canvasEl.width = window.innerWidth;
+    canvasEl.height = window.innerHeight;
+});
