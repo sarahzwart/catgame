@@ -6,12 +6,9 @@ body {
     background: linear-gradient(135deg, #ffffff, #9bba91);
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-#soccerScreen {
-    margin-top: 50px;
 }
 
 canvas {
@@ -26,6 +23,7 @@ canvas {
     border-radius: 15px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
     width: 300px;
+    margin-bottom: 20px;
 }
 
 #loginScreen h1 {
@@ -66,3 +64,23 @@ canvas {
     font-size: 0.9em;
     color: #d9534f;
 }
+
+.scoreboard {
+    display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	width: 300px;
+	font-family: 'Quicksand', sans-serif;
+}
+
+.scoreboard__team {
+    padding: 10px;
+	text-align: center;
+    font-weight: bold;
+	border-bottom: 1px solid #ddd;
+}
+
+.scoreboard__score {
+    padding: 10px;
+	text-align: center;
+}
+
