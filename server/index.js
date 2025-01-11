@@ -6,7 +6,7 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client')));
 const httpServer = createServer(app);
 
 const io = new Server(httpServer);
@@ -22,11 +22,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, '../client', 'login.html'));
 });
 
 app.get('/soccer', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
 app.post('/login', (req, res) => {

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Game</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div id="soccerScreen">
+        <div class="scoreboard">
+            <div class="scoreboard__team">Team One</div>
+            <div class="scoreboard__team">Team Two</div>
+            <div class="scoreboard__score">0</div>
+            <div class="scoreboard__score">0</div>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/scripts/script.js"></script>
+</body>
+</html>

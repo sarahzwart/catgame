@@ -1,11 +1,11 @@
 const mapImage = new Image();
-mapImage.src = "/groundGrass.png";
+mapImage.src = "../assets/groundGrass.png";
 
 const catImage = new Image();
-catImage.src = "/cat.png";
+catImage.src = "../assets/cat.png";
 
 const ballImage = new Image();
-ballImage.src = '/ball.png';
+ballImage.src = '../assets/ball.png';
 
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;

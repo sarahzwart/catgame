@@ -2,7 +2,7 @@ var tmx = require('tmx-parser');
 
 async function loadMap (){
     const map = await new Promise((resolve, reject) => {
-        tmx.parseFile("./src/soccer.tmx", function(err, loadedMap) {
+        tmx.parseFile("./server/soccer.tmx", function(err, loadedMap) {
             if (err) return reject(err);
             resolve(loadedMap);
         });
